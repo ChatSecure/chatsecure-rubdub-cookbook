@@ -1,4 +1,4 @@
-# ChatSecure RubDub Cookbook
+# chatsecure-rubdub-cookbook
 
 Installs and configures the ChatSecure RubDub XMPP PubSub application as a persistent service.
 
