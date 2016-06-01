@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo
+echo "**** Pulling changes into app-root post-receive"
+echo
+
+cd <%= @app_root %> || exit
+unset GIT_DIR
+git pull origin master
+npm install
+
+exec git-update-server-info
