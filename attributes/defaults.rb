@@ -18,7 +18,6 @@ default['chatsecure_rubdub']['secret_item_name']    = "chatsecure_rubdub"
 # System
 default['chatsecure_rubdub']['app_root']            = "/var/www/RubDub"
 default['chatsecure_rubdub']['git_root']            = "/var/git/chatsecure-rubdub.git"  # Checkout into this directory, then copy to app_root post-receive
-default['chatsecure_rubdub']['config_path']         = "/config/default.yaml"
 
 default['chatsecure_rubdub']['service_user']        = "rubdub"
 default['chatsecure_rubdub']['service_group_id']    = 500
@@ -33,5 +32,8 @@ default['chatsecure_rubdub']['service_log']         = "chatsecure_rubdub.log"
 default['chatsecure_rubdub']['run_script']          = "run.sh"
 
 # RubDub parameters
+default['chatsecure_rubdub']['port']                = 5269
 default['chatsecure_rubdub']['bind_address']        = "pubsub-test.chatsecure.org"
 default['chatsecure_rubdub']['domain']              = "pubsub-test.chatsecure.org"
+default['chatsecure_rubdub']['tls_key_path']        = "/srv/ssl/pubsub-test.chatsecure.org.key"
+default['chatsecure_rubdub']['tls_cert_path']       = "/srv/ssl/pubsub-test.chatsecure.org.crt"

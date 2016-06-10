@@ -61,19 +61,6 @@ execute "set_app_permissions" do
   cwd node['chatsecure_rubdub']['app_root']
 end
 
-# Make configured src/index.js
-template node['chatsecure_rubdub']['app_root'] + "/src/index.js" do
-    source "index.js.erb"
-    owner node['chatsecure_rubdub']['git_user']   
-    group group_id   
-    mode "770"
-    variables({
-      :bind_address => node['chatsecure_rubdub']['bind_address'],
-      :domain => node['chatsecure_rubdub']['domain'],
-    })
-    action :create
-end
-
 =begin
 nodejs_npm 'install package.json dependencies' do
   path node['chatsecure_rubdub']['app_root'] # Directory containing package.json
@@ -101,7 +88,12 @@ template "/etc/init/" + node['chatsecure_rubdub']['service_name'] + ".conf" do
     :service_user => node['chatsecure_rubdub']['service_user'],
     :app_root => node['chatsecure_rubdub']['app_root'],
     :log_path => log_path,
-    :service_name => node['chatsecure_rubdub']['service_name']
+    :service_name => node['chatsecure_rubdub']['service_name'],
+    :port => node['chatsecure_rubdub']['port'],
+    :bind_address => node['chatsecure_rubdub']['bind_address'],
+    :domain => node['chatsecure_rubdub']['domain'],
+    :tls_key_path => node['chatsecure_rubdub']['tls_key_path'],
+    :tls_cert_path => node['chatsecure_rubdub']['tls_cert_path']
     })
 end
 

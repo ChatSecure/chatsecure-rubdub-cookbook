@@ -12,7 +12,13 @@ respawn limit 20 5
 
 script
 	echo $$ > /var/run/<%= @service_name %>.pid
-	exec sudo -u <%= @service_user %> /usr/bin/node <%= @app_root %>/src/index.js > <%= @log_path %> 2>&1
+	exec sudo -u <%= @service_user %> /usr/bin/node <%= @app_root %>/src/index.js \
+	-p <%= @port %> \
+	-b <%= @bind_address %> \
+	-d <%= @domain %> \
+	-k <%= @tls_key_path %> \
+	-c <%= @tls_cert_path %> \
+	> <%= @log_path %> 2>&1
 end script
 
 pre-stop script
