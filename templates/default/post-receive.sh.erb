@@ -6,6 +6,7 @@ echo
 
 cd <%= @app_root %> || exit
 unset GIT_DIR
+git reset --hard
 git pull origin master
 npm install
 

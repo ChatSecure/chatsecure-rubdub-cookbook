@@ -105,6 +105,13 @@ directory node['chatsecure_rubdub']['log_dir'] do
   action :create
 end
 
+file log_path do
+  mode '770'
+  owner node['chatsecure_rubdub']['service_user']
+  group group_id
+  action [:create_if_missing, :touch]
+end
+
 # Register app as a service
 service node['chatsecure_rubdub']['service_name'] do
   provider Chef::Provider::Service::Upstart
