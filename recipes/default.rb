@@ -70,6 +70,9 @@ nodejs_npm 'install package.json dependencies' do
 end
 =end
 
+node['nodejs']['install_method'] = 'binary'
+include_recipe "nodejs"
+
 execute "npm install package.json" do
   command "npm install"
   cwd node['chatsecure_rubdub']['app_root'] + '/'
