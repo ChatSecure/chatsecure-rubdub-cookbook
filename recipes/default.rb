@@ -61,17 +61,34 @@ execute "set_app_permissions" do
   cwd node['chatsecure_rubdub']['app_root']
 end
 
-=begin
-nodejs_npm 'install package.json dependencies' do
-  path node['chatsecure_rubdub']['app_root'] # Directory containing package.json
-  json true
-  #user 'root'
-  user node['chatsecure_rubdub']['service_user'] 
+# Setup certbot
+certbot_name = 'certbot-auto'
+remote_file '/usr/local/bin/certbot-auto' do
+  source 'https://dl.eff.org/certbot-auto'
+  mode '0755'
+  action :create_if_missing
 end
-=end
 
-node['nodejs']['install_method'] = 'binary'
-include_recipe "nodejs"
+execute "use certbot to generate certificate" do
+	command "certbot-auto certonly --standalone -n --agree-tos --email chris@chatsecure.org -d pubsub.chatsecure.org --keep"
+end
+
+fix_permissions = "cp /etc/letsencrypt/live/pubsub.chatsecure.org/fullchain.pem #{node['chatsecure_rubdub']['tls_cert_path']} && cp /etc/letsencrypt/live/pubsub.chatsecure.org/privkey.pem #{node['chatsecure_rubdub']['tls_key_path']} && chown -R #{node['chatsecure_rubdub']['service_user']}:#{group_id} #{node['chatsecure_rubdub']['tls_dir']} && chmod 755 -R #{node['chatsecure_rubdub']['tls_dir']}"
+
+execute "fix cert permissions" do
+	command fix_permissions
+end
+
+cron_command = "certbot renew --standalone -n --post-hook \"#{fix_permissions} && service #{node['chatsecure_rubdub']['service_name']} restart\""
+
+cron_d 'update-certificate' do
+	predefined_value '@daily'
+	command cron_command
+end
+
+node.default['nodejs']['version'] = '6.9.4'
+node.default['nodejs']['binary']['checksum'] = 'a1faed4afbbdbdddeae17a24b873b5d6b13950c36fabcb86327a001d24316ffb' 
+include_recipe "nodejs::nodejs_from_binary"
 
 execute "npm install package.json" do
   command "npm install"
