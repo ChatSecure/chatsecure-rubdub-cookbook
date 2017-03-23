@@ -86,9 +86,10 @@ cron_d 'update-certificate' do
 	command cron_command
 end
 
-node.default['nodejs']['version'] = '6.9.4'
-node.default['nodejs']['binary']['checksum'] = 'a1faed4afbbdbdddeae17a24b873b5d6b13950c36fabcb86327a001d24316ffb' 
-include_recipe "nodejs::nodejs_from_binary"
+execute "Install Node 6 LTS PPA" do
+	command "curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -"
+	command "sudo apt-get upgrade nodejs -y"
+end
 
 execute "npm install package.json" do
   command "npm install"

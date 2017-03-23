@@ -11,7 +11,7 @@ respawn limit 20 5
 setuid <%= @service_user %>
 
 script
-	exec /usr/local/bin/node <%= @app_root %>/src/index.js \
+	exec /usr/bin/nodejs <%= @app_root %>/src/index.js \
 	-p <%= @port %> \
 	-b <%= @bind_address %> \
 	-d <%= @domain %> \

@@ -25,16 +25,16 @@ default['chatsecure_rubdub']['service_group_id']    = 500
 default['chatsecure_rubdub']['service_name']        = "chatsecure-rubdub"
 
 default['chatsecure_rubdub']['git_user']            = "git"
-default['chatsecure_rubdub']['git_url']             = "git://github.com/ChatSecure/RubDub.git"
-default['chatsecure_rubdub']['git_rev']             = "master"
+default['chatsecure_rubdub']['git_url']             = "https://github.com/ChatSecure/RubDub.git"
+default['chatsecure_rubdub']['git_rev']             = "387aad1ab82657cdf836ee567946505fd5b118ca"
 default['chatsecure_rubdub']['log_dir']             = "/var/log/chatsecure_rubdub/"
 default['chatsecure_rubdub']['service_log']         = "chatsecure_rubdub.log"
 default['chatsecure_rubdub']['run_script']          = "run.sh"
 
 # RubDub parameters
 default['chatsecure_rubdub']['port']                = 5269
-default['chatsecure_rubdub']['bind_address']        = "pubsub-test.chatsecure.org"
-default['chatsecure_rubdub']['domain']              = "pubsub-test.chatsecure.org"
+default['chatsecure_rubdub']['bind_address']        = "pubsub.chatsecure.org"
+default['chatsecure_rubdub']['domain']              = "pubsub.chatsecure.org"
 default['chatsecure_rubdub']['tls_dir']				= "/srv/ssl/"
 default['chatsecure_rubdub']['tls_key_path']        = "/srv/ssl/pubsub.chatsecure.org.key" 
 default['chatsecure_rubdub']['tls_cert_path']       = "/srv/ssl/pubsub.chatsecure.org.crt"
