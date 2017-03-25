@@ -8,8 +8,8 @@
 #
 
 # Chef repo
-default['chatsecure_rubdub']['secret_databag_name'] = "secrets"
-default['chatsecure_rubdub']['secret_item_name']    = "chatsecure_rubdub"
+default['chatsecure_rubdub']['secret_databag_name'] = "rubdub-secrets"
+default['chatsecure_rubdub']['secret_item_name']    = "secrets"
 
 # TODO SSL
 #default['chatsecure_rubdub']['ssl_databag_name']       = "ssl"
@@ -26,7 +26,7 @@ default['chatsecure_rubdub']['service_name']        = "chatsecure-rubdub"
 
 default['chatsecure_rubdub']['git_user']            = "git"
 default['chatsecure_rubdub']['git_url']             = "https://github.com/ChatSecure/RubDub.git"
-default['chatsecure_rubdub']['git_rev']             = "387aad1ab82657cdf836ee567946505fd5b118ca"
+default['chatsecure_rubdub']['git_rev']             = "e2a96670028544e12a9a39545f35396ef326cc58"
 default['chatsecure_rubdub']['log_dir']             = "/var/log/chatsecure_rubdub/"
 default['chatsecure_rubdub']['service_log']         = "chatsecure_rubdub.log"
 default['chatsecure_rubdub']['run_script']          = "run.sh"

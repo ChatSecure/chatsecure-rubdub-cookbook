@@ -17,5 +17,6 @@ script
 	-d <%= @domain %> \
 	-k <%= @tls_key_path %> \
 	-c <%= @tls_cert_path %> \
+	-r <%= @rollbar_key %> \
 	>> <%= @log_path %> 2>&1
 end script

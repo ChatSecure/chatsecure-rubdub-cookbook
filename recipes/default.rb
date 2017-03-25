@@ -99,6 +99,9 @@ execute "npm install package.json" do
   environment "HOME" => "/home/" + node['chatsecure_rubdub']['service_user']
 end
 
+secrets = data_bag_item(node['chatsecure_rubdub']['secret_databag_name'], node['chatsecure_rubdub']['secret_item_name'])
+rollbar_key = secrets['rollbar']
+
 log_path = node['chatsecure_rubdub']['log_dir'] + node['chatsecure_rubdub']['service_log']
 # Upstart service config file
 template "/etc/init/" + node['chatsecure_rubdub']['service_name'] + ".conf" do
@@ -114,7 +117,8 @@ template "/etc/init/" + node['chatsecure_rubdub']['service_name'] + ".conf" do
     :bind_address => node['chatsecure_rubdub']['bind_address'],
     :domain => node['chatsecure_rubdub']['domain'],
     :tls_key_path => node['chatsecure_rubdub']['tls_key_path'],
-    :tls_cert_path => node['chatsecure_rubdub']['tls_cert_path']
+    :tls_cert_path => node['chatsecure_rubdub']['tls_cert_path'],
+    :rollbar_key => rollbar_key
     })
 end
 
