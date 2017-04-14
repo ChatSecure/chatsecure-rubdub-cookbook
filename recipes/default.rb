@@ -18,38 +18,11 @@ directory node['chatsecure_rubdub']['app_root'] do
   action :create
 end
 
-directory node['chatsecure_rubdub']['git_root'] do
-  owner node['chatsecure_rubdub']['git_user']
-  group group_id
-  recursive true
-  action :create
-end
-
 ssh_known_hosts_entry 'github.com'
-
-# Git checkout to git_root
-git node['chatsecure_rubdub']['git_root'] do
-   repository node['chatsecure_rubdub']['git_url'] 
-   revision node['chatsecure_rubdub']['git_rev']  
-   action :sync
-   user node['chatsecure_rubdub']['git_user']
-   group group_id
-end
-
-# Git post-receive hook for git_root: Pull changes to app_root
-template node['chatsecure_rubdub']['git_root'] + "/.git/hooks/post-receive" do
-  source "post-receive.sh.erb"
-  owner node['chatsecure_rubdub']['git_user']
-  group group_id
-  mode "770"
-  variables({
-    :app_root => node['chatsecure_rubdub']['app_root'],
-  })
-end
 
 # Perform initial Git pull from git_root into app_root
 git node['chatsecure_rubdub']['app_root'] do
-  repository node['chatsecure_rubdub']['git_root']
+  repository node['chatsecure_rubdub']['git_url']
   revision node['chatsecure_rubdub']['git_rev']  
   action :sync
   user node['chatsecure_rubdub']['git_user']
@@ -70,16 +43,16 @@ remote_file '/usr/local/bin/certbot-auto' do
 end
 
 execute "use certbot to generate certificate" do
-	command "certbot-auto certonly --standalone -n --agree-tos --email chris@chatsecure.org -d pubsub.chatsecure.org --keep"
+	command "certbot-auto certonly --standalone -n --agree-tos --email chris@chatsecure.org -d #{node['chatsecure_rubdub']['domain']} --keep"
 end
 
-fix_permissions = "cp /etc/letsencrypt/live/pubsub.chatsecure.org/fullchain.pem #{node['chatsecure_rubdub']['tls_cert_path']} && cp /etc/letsencrypt/live/pubsub.chatsecure.org/privkey.pem #{node['chatsecure_rubdub']['tls_key_path']} && chown -R #{node['chatsecure_rubdub']['service_user']}:#{group_id} #{node['chatsecure_rubdub']['tls_dir']} && chmod 755 -R #{node['chatsecure_rubdub']['tls_dir']}"
+fix_permissions = "cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/fullchain.pem #{node['chatsecure_rubdub']['tls_cert_path']} && cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/privkey.pem #{node['chatsecure_rubdub']['tls_key_path']} && chown -R #{node['chatsecure_rubdub']['service_user']}:#{group_id} #{node['chatsecure_rubdub']['tls_dir']} && chmod 755 -R #{node['chatsecure_rubdub']['tls_dir']}"
 
 execute "fix cert permissions" do
 	command fix_permissions
 end
 
-cron_command = "certbot renew --standalone -n --post-hook \"#{fix_permissions} && service #{node['chatsecure_rubdub']['service_name']} restart\""
+cron_command = "certbot renew --standalone -n --post-hook \"#{fix_permissions} && systemctl restart #{node['chatsecure_rubdub']['service_name']}.service\""
 
 cron_d 'update-certificate' do
 	predefined_value '@daily'
@@ -104,10 +77,11 @@ rollbar_key = secrets['rollbar']
 
 log_path = node['chatsecure_rubdub']['log_dir'] + node['chatsecure_rubdub']['service_log']
 # Upstart service config file
-template "/etc/init/" + node['chatsecure_rubdub']['service_name'] + ".conf" do
-    source "upstart.conf.erb"
+template "/etc/systemd/system/" + node['chatsecure_rubdub']['service_name'] + ".service" do
+    source "systemd.service.erb"
     owner 'root' 
     group 'root'
+    mode '0755'
     variables({
     :service_user => node['chatsecure_rubdub']['service_user'],
     :app_root => node['chatsecure_rubdub']['app_root'],
@@ -139,6 +113,6 @@ end
 
 # Register app as a service
 service node['chatsecure_rubdub']['service_name'] do
-  provider Chef::Provider::Service::Upstart
+  provider Chef::Provider::Service::Systemd
   action [:enable, :start]
 end

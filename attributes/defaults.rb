@@ -17,7 +17,6 @@ default['chatsecure_rubdub']['secret_item_name']    = "secrets"
  
 # System
 default['chatsecure_rubdub']['app_root']            = "/var/www/RubDub"
-default['chatsecure_rubdub']['git_root']            = "/var/git/chatsecure-rubdub.git"  # Checkout into this directory, then copy to app_root post-receive
 
 default['chatsecure_rubdub']['service_user']        = "rubdub"
 default['chatsecure_rubdub']['service_group_id']    = 500
