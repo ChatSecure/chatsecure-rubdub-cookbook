@@ -32,7 +32,7 @@ default['chatsecure_rubdub']['run_script']          = "run.sh"
 
 # RubDub parameters
 default['chatsecure_rubdub']['port']                = 5269
-default['chatsecure_rubdub']['bind_address']        = "pubsub.chatsecure.org"
+default['chatsecure_rubdub']['bind_address']        = "0.0.0.0"
 default['chatsecure_rubdub']['domain']              = "pubsub.chatsecure.org"
 default['chatsecure_rubdub']['tls_dir']				= "/srv/ssl/"
 default['chatsecure_rubdub']['tls_key_path']        = "/srv/ssl/pubsub.chatsecure.org.key" 
