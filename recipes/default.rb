@@ -7,6 +7,33 @@
 # Licensed under the AGPLv3
 #
 
+# open standard ssh port
+firewall_rule 'ssh' do
+  port     22
+  command  :allow
+end
+
+# open multiple ports for http/https, note that the protocol
+# attribute is required when using ports
+firewall_rule 'http/https' do
+  protocol :tcp
+  port     [80, 443]
+  command   :allow
+end
+
+# open multiple ports for http/https, note that the protocol
+# attribute is required when using ports
+firewall_rule 'xmpp-s2s' do
+  protocol :tcp
+  port     [5269]
+  command   :allow
+end
+
+# enable platform default firewall
+firewall 'default' do
+  action :install
+end
+
 owner = node['chatsecure_rubdub']['service_user']
 group_id = node['chatsecure_rubdub']['service_group_id']
 
