@@ -52,7 +52,7 @@ execute "fix cert permissions" do
 	command fix_permissions
 end
 
-cron_command = "certbot renew --standalone -n --post-hook \"#{fix_permissions} && systemctl restart #{node['chatsecure_rubdub']['service_name']}.service\""
+cron_command = "certbot-auto renew --standalone -n --post-hook \"#{fix_permissions} && systemctl restart #{node['chatsecure_rubdub']['service_name']}.service\""
 
 cron_d 'update-certificate' do
 	predefined_value '@daily'
