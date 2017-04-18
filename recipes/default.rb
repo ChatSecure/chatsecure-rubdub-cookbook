@@ -61,7 +61,10 @@ end
 
 execute "Install Node 6 LTS PPA" do
 	command "curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -"
-	command "sudo apt-get upgrade nodejs -y"
+end
+
+execute "Upgrade Nodejs from PPA" do
+  command "sudo apt-get upgrade nodejs -y"
 end
 
 execute "npm install package.json" do
