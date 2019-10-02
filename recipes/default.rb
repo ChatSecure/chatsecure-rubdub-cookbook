@@ -61,29 +61,8 @@ execute "set_app_permissions" do
   cwd node['chatsecure_rubdub']['app_root']
 end
 
-# Setup certbot
-certbot_name = 'certbot-auto'
-remote_file '/usr/local/bin/certbot-auto' do
-  source 'https://dl.eff.org/certbot-auto'
-  mode '0755'
-  action :create_if_missing
-end
-
-execute "use certbot to generate certificate" do
-	command "certbot-auto certonly --no-self-upgrade --standalone -n --agree-tos --email chris@chatsecure.org -d #{node['chatsecure_rubdub']['domain']} --keep"
-end
-
-fix_permissions = "cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/fullchain.pem #{node['chatsecure_rubdub']['tls_cert_path']} && cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/privkey.pem #{node['chatsecure_rubdub']['tls_key_path']} && chown -R #{node['chatsecure_rubdub']['service_user']}:#{group_id} #{node['chatsecure_rubdub']['tls_dir']} && chmod 755 -R #{node['chatsecure_rubdub']['tls_dir']}"
-
-execute "fix cert permissions" do
-	command fix_permissions
-end
-
-cron_command = "certbot-auto renew --no-self-upgrade --standalone -n --post-hook \"#{fix_permissions} && systemctl restart #{node['chatsecure_rubdub']['service_name']}.service\""
-
-cron_d 'update-certificate' do
-	predefined_value '@daily'
-	command cron_command
+execute "Install Certbot PPA" do
+	command "sudo apt-get update && sudo apt-get install software-properties-common -y && sudo add-apt-repository ppa:certbot/certbot -y"
 end
 
 execute "Install Node 6 LTS PPA" do
@@ -92,6 +71,27 @@ end
 
 execute "Upgrade Nodejs from PPA" do
   command "sudo apt-get upgrade nodejs -y"
+end
+
+execute "Install Certbot" do
+	command "sudo apt-get update && sudo apt-get install certbot -y"
+end
+
+execute "use certbot to generate certificate" do
+	command "certbot certonly --standalone -n --agree-tos --email chris@chatsecure.org -d #{node['chatsecure_rubdub']['domain']} --keep"
+end
+
+fix_permissions = "cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/fullchain.pem #{node['chatsecure_rubdub']['tls_cert_path']} && cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/privkey.pem #{node['chatsecure_rubdub']['tls_key_path']} && chown -R #{node['chatsecure_rubdub']['service_user']}:#{group_id} #{node['chatsecure_rubdub']['tls_dir']} && chmod 755 -R #{node['chatsecure_rubdub']['tls_dir']}"
+
+execute "fix cert permissions" do
+	command fix_permissions
+end
+
+cron_command = "certbot renew --standalone -n --post-hook \"#{fix_permissions} && systemctl restart #{node['chatsecure_rubdub']['service_name']}.service\""
+
+cron_d 'update-certificate' do
+	predefined_value '@daily'
+	command cron_command
 end
 
 execute "npm install package.json" do
