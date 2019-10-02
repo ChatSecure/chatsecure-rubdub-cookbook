@@ -25,7 +25,7 @@ default['chatsecure_rubdub']['service_name']        = "chatsecure-rubdub"
 
 default['chatsecure_rubdub']['git_user']            = "git"
 default['chatsecure_rubdub']['git_url']             = "https://github.com/ChatSecure/RubDub.git"
-default['chatsecure_rubdub']['git_rev']             = "e2a96670028544e12a9a39545f35396ef326cc58"
+default['chatsecure_rubdub']['git_rev']             = "0335d20882c3cca644b874ce282ff485b51d1748"
 default['chatsecure_rubdub']['log_dir']             = "/var/log/chatsecure_rubdub/"
 default['chatsecure_rubdub']['service_log']         = "chatsecure_rubdub.log"
 default['chatsecure_rubdub']['run_script']          = "run.sh"

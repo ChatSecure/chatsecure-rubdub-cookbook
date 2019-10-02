@@ -70,7 +70,7 @@ remote_file '/usr/local/bin/certbot-auto' do
 end
 
 execute "use certbot to generate certificate" do
-	command "certbot-auto certonly --standalone -n --agree-tos --email chris@chatsecure.org -d #{node['chatsecure_rubdub']['domain']} --keep"
+	command "certbot-auto certonly --no-self-upgrade --standalone -n --agree-tos --email chris@chatsecure.org -d #{node['chatsecure_rubdub']['domain']} --keep"
 end
 
 fix_permissions = "cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/fullchain.pem #{node['chatsecure_rubdub']['tls_cert_path']} && cp /etc/letsencrypt/live/#{node['chatsecure_rubdub']['domain']}/privkey.pem #{node['chatsecure_rubdub']['tls_key_path']} && chown -R #{node['chatsecure_rubdub']['service_user']}:#{group_id} #{node['chatsecure_rubdub']['tls_dir']} && chmod 755 -R #{node['chatsecure_rubdub']['tls_dir']}"
@@ -79,7 +79,7 @@ execute "fix cert permissions" do
 	command fix_permissions
 end
 
-cron_command = "certbot-auto renew --standalone -n --post-hook \"#{fix_permissions} && systemctl restart #{node['chatsecure_rubdub']['service_name']}.service\""
+cron_command = "certbot-auto renew --no-self-upgrade --standalone -n --post-hook \"#{fix_permissions} && systemctl restart #{node['chatsecure_rubdub']['service_name']}.service\""
 
 cron_d 'update-certificate' do
 	predefined_value '@daily'
